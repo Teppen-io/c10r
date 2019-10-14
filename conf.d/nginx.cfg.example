@@ -1,0 +1,10 @@
+[template]
+src=/etc/c10r/templates/nginx.conf.tpl
+write=yes
+prune=yes
+dest_dir=/etc/nginx/sites-enabled
+dest_name=${name}.conf
+mtime=last_updated
+query=SELECT id, name, root
+      strftime('%s', last_updated) as last_updated
+      FROM http_servers

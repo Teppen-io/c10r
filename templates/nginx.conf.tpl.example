@@ -1,0 +1,9 @@
+##
+# ${name}:80 - Last Updated: ${last_updated}
+##
+
+server {
+    server_name    ${name} www.${name};
+    access_log     logs/${name}.access.log main;
+    root           ${root};
+}
