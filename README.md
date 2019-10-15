@@ -100,7 +100,7 @@ Create a systemd service config `/etc/systemd/system/c10r.service`:
 
 ```ini
 [Unit]
-Description=Keeps config files in sync with a SQL db (sqlite3, mysql)
+Description=c10r Configuration Service
 
 [Install]
 WantedBy=default.target
