@@ -20,7 +20,7 @@ Keeps config files in sync with a SQL db (sqlite3, mysql)
 ## Installation
 
 ```shell
-wget https://github.com/Teppen-io/c10r/archive/master.zip
+wget https://github.com/Teppen-io/c10r/archive/master.zip && \
 unzip master.zip && mv c10r-master /etc/c10r
 ```
 
