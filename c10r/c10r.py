@@ -7,7 +7,6 @@ from template import TemplateResource
 CONFIG_PATH= Path.joinpath(Path(__file__).parent.resolve(), '../c10r.cfg')
 CONFD_PATH = Path.joinpath(Path(__file__).parent.resolve(), '../conf.d')
 
-from IPython import embed
 
 class c10r:
     def __init__(self, **kwargs):
@@ -51,8 +50,7 @@ class c10r:
         return self._template_resources
 
 def main():
-    #embed()
-    c10r().run_once()
+    c10r().run_forever()
 
 if __name__== "__main__":
     main()

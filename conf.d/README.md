@@ -5,6 +5,8 @@
 * [Configuration Options](#configuration-options)
   * [src](#src)
   * [dest](#dest)
+  * [before](#before)
+  * [after](#after)
   * [write](#write)
   * [prune](#prune)
   * [mtime](#mtime)
@@ -22,6 +24,8 @@ Template configurations are implemented using [Python Config Parser](https://doc
 [template]
 src=/etc/c10r/templates/nginx.conf.tpl
 dest=/etc/nginx/sites-enabled/${name}.conf
+before=
+after=/usr/sbin/nginx -s reload
 write=yes
 prune=no
 mtime=last_updated
@@ -42,10 +46,20 @@ query=SELECT id, name, root,
 * **Type:** String/Template String
 * **Desc:** The destination filepath on the filesystem to manage. Can also include a [Template String](#template-strings). If enabled, c10r will also [prune](#prune) files in the parent directory.
 
+### before
+
+* **Type:** String
+* **Desc:** The command to run before [writing](#write) templates and/or [pruning](#prune) files.
+
+### after
+
+* **Type:** String
+* **Desc:** The command to run before [writing](#write) templates and/or [pruning](#prune) files.
+
 ### write
 
 * **Type:** Bool
-* **Desc:** Write parsed templates to the filesystem
+* **Desc:** Write parsed templates to the filesystem.
 
 ### prune
 
