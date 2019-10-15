@@ -6,7 +6,7 @@
 
 ## Basics
 
-Templates are parsed using [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) and are generally stored in `c10r/templates/*.tpl`
+Templates are parsed using [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) and are generally sourced from `c10r/templates/*.tpl`
 
 ## Example Template
 

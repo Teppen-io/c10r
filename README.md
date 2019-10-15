@@ -90,7 +90,7 @@ See: [Template Configuration](conf.d/)
 
 ### Template Files
 
-Templates are parsed using [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) and are generally stored in `c10r/templates/*.tpl`
+Templates are parsed using [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) and are generally sourced from `c10r/templates/*.tpl`
 
 See: [Templates](templates/)
 
@@ -108,7 +108,7 @@ WantedBy=default.target
 [Service]
 Environment=PYTHONUNBUFFERED=1
 User=www-data
-ExecStart=/etc/c10r/c10r.py
+ExecStart=/etc/c10r/c10r/c10r.py
 Restart=on-failure
 ```
 

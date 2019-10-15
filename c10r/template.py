@@ -15,55 +15,61 @@ class TemplateResource:
             from backends.sqlite3_ import Datasource
         return Datasource(self._config['query'], **backend_config)
 
-    def _get_filesystem_state(self):
-        flist = list(Path(self._config['dest_dir']).glob('*'))
-        return [
-            (
-                file.relative_to(self._config['dest_dir']),
-                int(file.stat().st_mtime)
-            )
-            for file in flist
-        ]
+    def _get_filesystem_state(self, managed_dirs):
+        flist = []
+        for managed_dir in managed_dirs:
+            files = list(Path(managed_dir).glob('*'))
+            flist += [
+                (
+                    f,
+                    int(f.stat().st_mtime)
+                )
+                for f in files
+            ]
+        return flist
 
     def _get_datasource_state(self, rows):
-        rlist = []
+        flist, managed_dirs = [], []
         for row in rows:
-            rlist.append((
-                Path(Template(self._config['dest_name']).substitute(**row)),
-                int(row[self._config['mtime']])
-            ))
-        return rlist
-
-    def _not_found_filesystem(self, filelist, rowlist):
-        return list(set(rowlist) - set(filelist))
-
-    def _not_found_datasource(self, filelist, rowlist):
-        return list(set(filelist) - set(rowlist))
+            dest = Path(Template(self._config['dest']).substitute(**row))
+            managed_dirs.append(dest.parent)
+            flist.append(
+                (
+                    dest,
+                    int(row[self._config['mtime']])
+                )
+            )
+        return flist, managed_dirs
     
     def _file_names(self, filelist):
-        return [ file[0] for file in filelist ]
+        return [ f[0] for f in filelist ]
 
     def _prune(self, filelist):
-        for file in filelist:
-            Path(self._config['dest_dir']).joinpath(file[0]).unlink()
+        for f in self._file_names(filelist):
+            Path(f).unlink()
 
     def _write(self, rows, to_write):
         for row in rows:
-            file_name = Path(Template(self._config['dest_name']).substitute(**row))
-            if file_name in self._file_names(to_write):
+            dest = Path(Template(self._config['dest']).substitute(**row))
+            if dest in self._file_names(to_write):
+                dest.parent.mkdir(parents=True, exist_ok=True)
                 with open(self._config['src']) as f:
                     substituted_template = Template(f.read()).substitute(**row)
                     mtime = int(row[self._config['mtime']])
-                    destination = Path(self._config['dest_dir']).joinpath(file_name)
-                    destination.write_text(substituted_template)
-                    os.utime(destination, (mtime, mtime))
+                    dest.write_text(substituted_template)
+                    os.utime(dest, (mtime, mtime))
+
+    def _state_difference(self, ds_rows):
+        rowlist, managed_dirs = self._get_datasource_state(ds_rows)
+        filelist = self._get_filesystem_state(managed_dirs)
+        return [
+            list(set(filelist) - set(rowlist)),
+            list(set(rowlist) - set(filelist))
+        ]
 
     def sync(self):
         ds_rows = self._datasource.rows
-        filelist = self._get_filesystem_state()
-        rowlist = self._get_datasource_state(ds_rows)
-        to_delete = self._not_found_datasource(filelist, rowlist)
-        to_write = self._not_found_filesystem(filelist, rowlist)
+        to_delete, to_write = self._state_difference(ds_rows)
 
         if self._config['write']:
             self._write(ds_rows, to_write)

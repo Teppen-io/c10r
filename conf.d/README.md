@@ -4,10 +4,9 @@
 * [Example Configuration](#example-configuration)
 * [Configuration Options](#configuration-options)
   * [src](#src)
+  * [dest](#dest)
   * [write](#write)
   * [prune](#prune)
-  * [dest_dir](#dest_dir)
-  * [dest_name](#dest_dir)
   * [mtime](#mtime)
     * [sqlite3](#sqlite3)
   * [query](#query)
@@ -22,14 +21,13 @@ Template configurations are implemented using [Python Config Parser](https://doc
 ```ini
 [template]
 src=/etc/c10r/templates/nginx.conf.tpl
+dest=/etc/nginx/sites-enabled/${name}.conf
 write=yes
-prune=yes
-dest_dir=/etc/nginx/sites-enabled
-dest_name=${name}.conf
+prune=no
 mtime=last_updated
-query=SELECT id, name, root
+query=SELECT id, name, root,
       strftime('%s', last_updated) as last_updated
-      FROM http_servers
+      FROM api_domain
 ```
 
 ## Configuration Options
@@ -37,7 +35,12 @@ query=SELECT id, name, root
 ### src
 
 * **Type:** String
-* **Desc:** The source template location, usually `c10r/templates/*.tpl`. c10r will use [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) to inject SQL column values into the source template and then write the file to the filesystem.
+* **Desc:** The source template location, generally `c10r/templates/*.tpl`. c10r will use [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) to inject SQL column values into the source template and then write the file to the filesystem.
+
+### dest
+
+* **Type:** String/Template String
+* **Desc:** The destination filepath on the filesystem to manage. Can also include a [Template String](#template-strings). If enabled, c10r will also [prune](#prune) files in the parent directory.
 
 ### write
 
@@ -49,16 +52,6 @@ query=SELECT id, name, root
 * **Type:** Bool
 * **Desc:** Delete non-existing templates from the filesystem. Any file without a corresonding row in the result set of the SQL query will be deleted.
 
-### dest_dir
-
-* **Type:** String/Template String
-* **Desc:** The destination directory on the filesystem to manage. Can also include a [Template String](#template-strings). c10r will [write](#write) and [prune](#prune) files in this directory.
-
-### dest_name
-
-* **Type:** String/Template String
-* **Desc:** The destination file on the filesystem to manage. Can also include a [Template String](#template-strings).
-
 ### mtime
 
 * **Type:** String
@@ -67,17 +60,17 @@ query=SELECT id, name, root
 ### query
 
 * **Type:** String
-* **Desc:** The SQL query which will return the columns necessary to correctly parse the template and write it to the filesystem.  One of the returned columns **must** contain an integer representation of standard Epoch time in seconds. See: [mtime](#mtime)
+* **Desc:** The SQL query which will return the columns necessary to correctly parse the template and write it to the filesystem.  One of the returned columns **must** contain an integer representation of Epoch time. See: [mtime](#mtime)
 
-#### SQLite3
+#### SQLite3 Epoch Time
 
-This can be achieved by using `strftime` to ensure a datetime is returned as an int (seconds since 1970-01-01.)
+Use `strftime` to ensure a datetime is returned as the seconds since 1970-01-01 (Unix Epoch).
 
 E.g. `SELECT strftime('%s', last_updated) as last_updated FROM my_table`
 
 ## Template Strings
 
-`dest_dir` and `dest_file` can include [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings), which will be substituted for columns returned by your SQL query.
+`dest` can include [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings), which will be substituted for columns returned by your SQL query.
 
 E.g. If your query returns the following:
 
@@ -89,8 +82,7 @@ E.g. If your query returns the following:
 Then:
 
 ```ini
-dest_dir=/etc/nginx/sites-enabled/${location}
-dest_name=${type}.conf
+dest=/etc/nginx/sites-enabled/${name}/${type}.conf
 ```
 
 Will become:
