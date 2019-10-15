@@ -1,6 +1,6 @@
 # c10r Template Configs
 
-* [Basics](#Basics)
+* [Basics](#basics)
 * [Example Configuration](#example-configuration)
 * [Configuration Options](#configuration-options)
   * [src](#src)
@@ -15,7 +15,7 @@
 
 ## Basics
 
-Template configurations are implemented using [Python Config Parser](https://docs.python.org/3/library/configparser.html) and are stored in `conf.d/*.cfg`
+Template configurations are implemented using [Python Config Parser](https://docs.python.org/3/library/configparser.html) and are generally stored in `c10r/conf.d/*.cfg`
 
 ## Example Configuration
 
@@ -37,7 +37,7 @@ query=SELECT id, name, root
 ### src
 
 * **Type:** String
-* **Desc:** The source template location, usually `templates/*.tpl`. c10r will use [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) to inject SQL column values into the source template and then write the file to the filesystem.
+* **Desc:** The source template location, usually `c10r/templates/*.tpl`. c10r will use [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) to inject SQL column values into the source template and then write the file to the filesystem.
 
 ### write
 

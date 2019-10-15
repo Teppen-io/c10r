@@ -2,20 +2,33 @@
 
 Keeps config files in sync with a SQL db (sqlite3, mysql)
 
-## Usage
+* [Installation](#installation)
+* [Configuration](#configuration)
+  * [Base Configuration](#base-configuration)
+    * [Configuration Options](#configuration-options)
+      * [backend](#backend)
+      * [interval](#interval)
+      * [confd](#confd)
+      * [templates](#templates)
+      * [sqlite3](#sqlite3)
+      * [mysql](#mysql)
+  * [Template Configuration](#template-configuration)
+  * [Template Files](#template-files)
+* [Run as a service](#run-as-a-service)
+  * [credit](#credit)
 
-### Installalation
+## Installation
 
 ```shell
 wget https://github.com/Teppen-io/c10r/archive/master.zip
 unzip master.zip && mv c10r-master /etc/c10r
 ```
 
-### Configuration
+## Configuration
 
-#### Base Configuration
+### Base Configuration
 
-The c10r base configuration is stored in `/etc/c10r/c10r.cfg`:
+The c10r base configuration is implemented using [Python Config Parser](https://docs.python.org/3/library/configparser.html) and is generally stored in `c10r/c10r.cfg`:
 
 ```ini
 [c10r]
@@ -37,38 +50,49 @@ host=127.0.0.1
 port=3306
 ```
 
-#### Template Configuration
+#### Configuration Options
 
-Template confiurations are stored in `conf.d/*.cfg`:
+##### backend
 
-```ini
-[template]
-src=/etc/c10r/templates/nginx.conf.tpl
-write=yes
-prune=yes
-dest_dir=/etc/nginx/sites-enabled
-dest_name=${name}.conf
-mtime=last_updated
-query=SELECT id, name, root
-      strftime('%s', last_updated) as last_updated
-      FROM http_servers
-```
+* **Type:** String
+* **Desc:** Which database backend to load. c10r expects to find a dedicated config section named appropriately for the database backend.
 
-#### Template files
+##### interval
 
-Templates are stored in `/etc/c10r/templates/*.tpl`:
+* **Type:** Int
+* **Desc:** The number of seconds between database checks.
 
-```nginx
-##
-# ${name}:80 - Last Updated: ${last_updated}
-##
+##### confd
 
-server {
-    server_name    ${name} www.${name};
-    access_log     logs/${name}.access.log main;
-    root           ${root};
-}
-```
+* **Type:** String
+* **Desc:** The filesystem path that contains the template configurations.
+
+##### templates
+
+* **Type:** String
+* **Desc:** The filesystem path that contains the source template files.
+
+##### sqlite3
+
+* **Type:** Config Section
+* **Desc:** Required if you have specified `backend=sqlite3`. Only contains one configuration option (`file`), the location of the database.
+
+##### mysql
+
+* **Type:** Config Section
+* **Desc:** Required if you have specified `backend=mysql`. All specified options will be passed through to the `python-mysql-connector` library.
+
+### Template Configuration
+
+Template configurations are implemented using [Python Config Parser](https://docs.python.org/3/library/configparser.html) and are generally stored in `c10r/conf.d/*.cfg`
+
+See: [Template Configuration](conf.d/)
+
+### Template Files
+
+Templates are parsed using [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) and are generally stored in `c10r/templates/*.tpl`
+
+See: [Templates](templates/)
 
 ## Run as a service
 
@@ -76,7 +100,7 @@ Create a systemd service config `/etc/systemd/system/c10r.service`:
 
 ```ini
 [Unit]
-Description=c10r keeps config files in sync with a SQL db (sqlite3, mysql)
+Description=Keeps config files in sync with a SQL db (sqlite3, mysql)
 
 [Install]
 WantedBy=default.target
