@@ -15,7 +15,7 @@ Keeps config files in sync with a SQL db (sqlite3, mysql)
   * [Template Configuration](#template-configuration)
   * [Template Files](#template-files)
 * [Run as a service](#run-as-a-service)
-  * [credit](#credit)
+  * [Credit](#credit)
 
 ## Installation
 
