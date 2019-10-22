@@ -69,18 +69,19 @@ class TemplateResource:
         ]
 
     def sync(self):
-        if self._config.getboolean('prune') or self._config['write']:
+        if self._config.getboolean('prune') or self._config.getboolean('write'):
             ds_rows = self._datasource.rows
             to_delete, to_write = self._state_difference(ds_rows)
 
-            if self._config['before']:
-                subprocess.run(self._config['before'].split(' '))
-            if self._config['write']:
-                self._write(ds_rows, to_write)
-            if self._config.getboolean('prune'):
-                self._prune(to_delete)
-            if self._config['after']:
-                subprocess.run(self._config['after'].split(' '))
+            if to_delete or to_write:
+                if self._config['before']:
+                    subprocess.run(self._config['before'].split(' '))
+                if self._config['write']:
+                    self._write(ds_rows, to_write)
+                if self._config.getboolean('prune'):
+                    self._prune(to_delete)
+                if self._config['after']:
+                    subprocess.run(self._config['after'].split(' '))
 
     @property
     def config(self):
