@@ -14,4 +14,5 @@ class Datasource:
 
     @property
     def rows(self):
-        return list(self._cursor.fetchall(self.query))
+        self._cursor.execute(self._query)
+        return list(self._cursor.fetchall())
