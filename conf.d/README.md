@@ -10,8 +10,9 @@
   * [write](#write)
   * [prune](#prune)
   * [mtime](#mtime)
-    * [sqlite3](#sqlite3)
   * [query](#query)
+    * [sqlite3 epoch](#sqlite3-epoch-time)
+    * [mysql epoch](#mysql-epoch-time)
 * [Template String](#temlate-strings)
 
 ## Basics
@@ -81,6 +82,12 @@ query=SELECT id, name, root,
 Use `strftime` to ensure a datetime is returned as the seconds since 1970-01-01 (Unix Epoch).
 
 E.g. `SELECT strftime('%s', last_updated) as last_updated FROM my_table`
+
+#### MySQL Epoch Time
+
+Use `UNIX_TIMESTAMP` to ensure a datetime is returned as the seconds since 1970-01-01 (Unix Epoch).
+
+E.g. `SELECT UNIX_TIMESTAMP(last_updated) as last_updated FROM my_table`
 
 ## Template Strings
 
