@@ -4,6 +4,7 @@ import configparser
 from pathlib import Path
 from template import TemplateResource
 
+
 CONFIG_PATH= Path.joinpath(Path(__file__).parent.resolve(), '../c10r.cfg')
 CONFD_PATH = Path.joinpath(Path(__file__).parent.resolve(), '../conf.d')
 
@@ -32,13 +33,16 @@ class c10r:
             template_resources.append(template_resource)
         return template_resources
 
-    def run_once(self):
+    def _run_once(self):
         for template_resource in self._template_resources:
             template_resource.sync()
-    
-    def run_forever(self):
-        self.run_once()
-        self._scheduler.enter(int(self._config['c10r']['interval']), 1, self.run_forever)
+
+    def _run_forever(self):
+        self._run_once()
+        self._scheduler.enter(int(self._config['c10r']['interval']), 1, self._run_forever)
+
+    def run(self):
+        self._scheduler.enter(int(self._config['c10r']['interval']), 1, self._run_forever)
         self._scheduler.run()
 
     @property
@@ -50,7 +54,7 @@ class c10r:
         return self._template_resources
 
 def main():
-    c10r().run_forever()
+    c10r().run()
 
 if __name__== "__main__":
     main()
