@@ -26,9 +26,9 @@ class c10r:
         for template_config in list(Path(location).glob('*.cfg')):
             template_config = self._read_config(template_config)['template']
             template_resource = TemplateResource(
+                template_config,
                 self._config['c10r']['backend'],
-                self._config[self._config['c10r']['backend']],
-                template_config
+                self._config[self._config['c10r']['backend']]
             )
             template_resources.append(template_resource)
         return template_resources

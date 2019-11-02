@@ -91,7 +91,7 @@ E.g. `SELECT UNIX_TIMESTAMP(last_updated) as last_updated FROM my_table`
 
 ## Template Strings
 
-`dest` can include [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings), which will be substituted for columns returned by your SQL query.
+`dest` can include [Python Template Strings](https://docs.python.org/3/library/string.html#template-strings) in the _file_ portion of the filepath. They will be substituted for columns returned by your SQL query.
 
 E.g. If your query returns the following:
 
@@ -103,10 +103,10 @@ E.g. If your query returns the following:
 Then:
 
 ```ini
-dest=/etc/nginx/sites-enabled/${name}/${type}.conf
+dest=/etc/nginx/sites-enabled/${name}-${type}.conf
 ```
 
 Will become:
 
-> /etc/nginx/sites-enabled/example.com/http.conf  
-/etc/nginx/sites-enabled/example.com/https.conf
+> /etc/nginx/sites-enabled/example.com-http.conf
+/etc/nginx/sites-enabled/example.com-https.conf
