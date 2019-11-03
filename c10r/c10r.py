@@ -33,12 +33,9 @@ class c10r:
             template_resources.append(template_resource)
         return template_resources
 
-    def _run_once(self):
+    def _run_forever(self):
         for template_resource in self._template_resources:
             template_resource.sync()
-
-    def _run_forever(self):
-        self._run_once()
         self._scheduler.enter(int(self._config['c10r']['interval']), 1, self._run_forever)
 
     def run(self):

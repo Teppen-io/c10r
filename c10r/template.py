@@ -32,8 +32,8 @@ class TemplateResource:
             if self._config['before']:
                 subprocess.run(self._config['before'].split(' '))
             if self._config['write']:
-                for f, metadata in ds_state:
-                    TemplateFile(f, metadata, self._config['src']).sync()
+                for f, metadata in ds_state.items():
+                    TemplateFile(f, metadata, self._config).sync()
             if self._config.getboolean('prune'):
                 for f in self._get_filesystem_state():
                     if f not in ds_state.keys():
