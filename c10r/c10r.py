@@ -12,8 +12,8 @@ CONFD_PATH = Path.joinpath(Path(__file__).parent.resolve(), '../conf.d')
 class c10r:
     def __init__(self, **kwargs):
         self._config = self._read_config(kwargs.get('config', CONFIG_PATH))
-        self._template_resources = self._parse_template_configs(kwargs.get('confd', CONFD_PATH))
         self._scheduler = sched.scheduler(time.time, time.sleep)
+        self._template_resources = self._parse_template_configs(kwargs.get('confd', CONFD_PATH))
 
     def _read_config(self, location):
         config = configparser.ConfigParser(interpolation=None)

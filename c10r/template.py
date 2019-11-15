@@ -25,26 +25,32 @@ class TemplateResource:
             for row in self._datasource.rows
         }
 
+    def _create_template_files(self, fs_state, ds_state):
+        template_files = [TemplateFile(tf, self._config, row) for tf, row in ds_state.items()]
+        for fpath in fs_state:
+            if fpath not in ds_state.keys():
+                template_files.append(TemplateFile(fpath, self._config))
+        return template_files
+
+    @staticmethod
+    def _filesystem_synced(template_files):
+        return all([tf.synced for tf in template_files])
+
+    @property
+    def _template_files(self):
+        return self._create_template_files(
+            self._get_filesystem_state(),
+            self._get_datasource_state()
+        )
+
     def sync(self):
         if self._config.getboolean('prune') or self._config.getboolean('write'):
-            ds_state = self._get_datasource_state()
+            template_files = self._template_files
 
-            if self._config['before']:
-                subprocess.run(self._config['before'].split(' '))
-            if self._config['write']:
-                for f, metadata in ds_state.items():
-                    TemplateFile(f, metadata, self._config).sync()
-            if self._config.getboolean('prune'):
-                for f in self._get_filesystem_state():
-                    if f not in ds_state.keys():
-                        f.unlink()
-            if self._config['after']:
-                subprocess.run(self._config['after'].split(' '))
-
-    @property
-    def config(self):
-        return self._config
-
-    @property
-    def datasource(self):
-        return self._datasource
+            if not self._filesystem_synced(template_files):
+                if self._config['before']:
+                    subprocess.run(self._config['before'].split(' '))
+                for tf in template_files:
+                    tf.sync()
+                if self._config['after']:
+                    subprocess.run(self._config['after'].split(' '))
