@@ -7,7 +7,14 @@ class TemplateFile:
         self._file = fpath
         self._row = row
         self._config = config
-        self._template = Template(open(self._config['src']).read()).substitute(**row)
+
+    @property
+    def _mtime(self):
+        return int(self._row.get(self._config['mtime'], 0))
+
+    @property
+    def _template(self):
+        return Template(open(self._config['src']).read()).substitute(**self._row)
 
     @property
     def _prune_required(self):
@@ -15,7 +22,7 @@ class TemplateFile:
 
     @property
     def _write_required(self):
-        if self._config['write']:
+        if self._config['write'] and self._row:
             return any([
                 not self._file.exists(),
                 self._file.exists() and not int(self._file.stat().st_mtime) == self._mtime
@@ -24,8 +31,7 @@ class TemplateFile:
     def _write(self):
         if self._write_required:
             self._file.write_text(self._template)
-            mtime = int(self._row.get(self._config['mtime']))
-            os.utime(self._file, (mtime, mtime))
+            os.utime(self._file, (self._mtime, self._mtime))
 
     def _prune(self):
         if self._prune_required:
