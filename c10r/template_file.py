@@ -18,11 +18,11 @@ class TemplateFile:
 
     @property
     def _prune_required(self):
-        return self._config['prune'] and not self._row
+        return self._config.getboolean('prune') and not self._row
 
     @property
     def _write_required(self):
-        if self._config['write'] and self._row:
+        if self._config.getboolean('write') and self._row:
             return any([
                 not self._file.exists(),
                 self._file.exists() and not int(self._file.stat().st_mtime) == self._mtime
