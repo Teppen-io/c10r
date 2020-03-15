@@ -5,7 +5,6 @@
     * [backend](#backend)
     * [interval](#interval)
     * [confd](#confd)
-    * [templates](#templates)
     * [sqlite3](#sqlite3)
     * [mysql](#mysql)
 
@@ -51,11 +50,6 @@ port = 3306
 
 * **Type:** String
 * **Desc:** The filesystem path that contains the template configurations.
-
-### templates
-
-* **Type:** String
-* **Desc:** The filesystem path that contains the source template files.
 
 ### sqlite3
 
