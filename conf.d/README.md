@@ -23,16 +23,16 @@ Template configurations are implemented using [Python Config Parser](https://doc
 
 ```ini
 [template]
-src=/etc/c10r/templates/nginx.conf.tpl
-dest=/etc/nginx/sites-enabled/${name}.conf
-before=
-after=/usr/sbin/nginx -s reload
-write=yes
-prune=no
-mtime=last_updated
-query=SELECT id, name, root,
-      strftime('%s', last_updated) as last_updated
-      FROM api_domain
+src = /etc/c10r/templates/nginx.conf.tpl
+dest = /etc/nginx/sites-enabled/${name}.conf
+before =
+after = /usr/sbin/nginx -s reload
+write = yes
+prune = no
+mtime = last_updated
+query = SELECT id, name, root,
+        strftime('%s', last_updated) as last_updated
+        FROM api_domain
 ```
 
 ## Configuration Options
@@ -103,7 +103,7 @@ E.g. If your query returns the following:
 Then:
 
 ```ini
-dest=/etc/nginx/sites-enabled/${name}-${type}.conf
+dest = /etc/nginx/sites-enabled/${name}-${type}.conf
 ```
 
 Will become:

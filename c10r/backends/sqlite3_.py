@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class Datasource:
     # https://docs.python.org/3/library/sqlite3.html
     def __init__(self, query, **kwargs):

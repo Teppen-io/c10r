@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-import time, sched
+import time
+import sched
 import configparser
 from pathlib import Path
-from template import TemplateResource
+from template_resource import TemplateResource
 
 
-CONFIG_PATH= Path.joinpath(Path(__file__).parent.resolve(), '../c10r.cfg')
+CONFIG_PATH = Path.joinpath(Path(__file__).parent.resolve(), '../c10r.cfg')
 CONFD_PATH = Path.joinpath(Path(__file__).parent.resolve(), '../conf.d')
 
 
-class c10r:
+class C10r:
     def __init__(self, **kwargs):
         self._config = self._read_config(kwargs.get('config', CONFIG_PATH))
         self._scheduler = sched.scheduler(time.time, time.sleep)
@@ -50,8 +51,10 @@ class c10r:
     def template_resources(self):
         return self._template_resources
 
-def main():
-    c10r().run()
 
-if __name__== "__main__":
+def main():
+    C10r().run()
+
+
+if __name__ == "__main__":
     main()

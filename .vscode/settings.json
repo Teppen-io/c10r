@@ -1,0 +1,4 @@
+{
+    "python.autoComplete.extraPaths": ["./c10r"],
+    "python.linting.flake8Args": ["--max-line-length=160"]
+}
