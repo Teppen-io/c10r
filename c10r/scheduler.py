@@ -25,7 +25,7 @@ class Scheduler:
     def _parse_template_configs(self, location):
         template_resources = []
         for template_config in list(Path(location).glob('*.cfg')):
-            parsed_config = self._read_config(template_config)['template']
+            parsed_config = self._read_config(template_config)
             template_resource = TemplateResource(
                 parsed_config,
                 self._config['scheduler']['backend'],

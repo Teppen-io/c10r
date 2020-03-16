@@ -6,7 +6,7 @@ from template_file import TemplateFile
 
 class TemplateResource:
     def __init__(self, template_config, backend, backend_config):
-        self._config = template_config
+        self._config = template_config['template']
         self._datasource = self._get_backend(backend, backend_config)
 
     def _get_backend(self, backend, backend_config):
