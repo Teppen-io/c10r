@@ -16,6 +16,8 @@ wget https://github.com/Teppen-io/c10r/archive/master.zip && \
 unzip master.zip && mv c10r-master /etc/c10r
 ```
 
+You may want to [Run as a service](#run-as-a-service).
+
 ## Configuration
 
 ### Base Configuration
@@ -50,7 +52,7 @@ WantedBy=default.target
 [Service]
 Environment=PYTHONUNBUFFERED=1
 User=www-data
-ExecStart=/etc/c10r/c10r/c10r.py
+ExecStart=/etc/c10r/c10r/scheduler.py
 Restart=on-failure
 ```
 

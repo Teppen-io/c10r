@@ -15,7 +15,7 @@ The c10r base configuration is implemented using [Python Config Parser](https://
 ## Example Configuration
 
 ```ini
-[c10r]
+[scheduler]
 backend = sqlite3
 interval = 10
 confd = /etc/c10r/conf.d/
